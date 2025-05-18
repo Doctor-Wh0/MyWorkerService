@@ -7,5 +7,5 @@ public class MyDbContext : DbContext
     {
     }
 
-    public DbSet<MyEntity> MyEntities { get; set; }
+    public DbSet<TradeRecord> MyEntities { get; set; }
 }

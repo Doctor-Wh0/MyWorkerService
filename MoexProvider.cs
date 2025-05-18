@@ -27,8 +27,11 @@ public class MoexProvider
             // Проверяем успешность ответа
             response.EnsureSuccessStatusCode();
 
+
             // Читаем и возвращаем содержимое ответа как строку
-            return await response.Content.ReadAsStringAsync();
+            var res = await response.Content.ReadAsStringAsync();
+            TradeRecord.Deserialize(res);
+            return "seccess";
         }
     }
 }
