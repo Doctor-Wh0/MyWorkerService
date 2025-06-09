@@ -7,4 +7,5 @@ public interface IDataRepository
     Task AddAsync(TradeRecord model);
     Task AddRangeAsync(List<TradeRecord> model);
     Task SaveChangesAsync();
+    Task<TradeRecord> GetLastRecord();
 }

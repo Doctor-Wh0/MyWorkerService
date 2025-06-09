@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace MyWorkerService.Repositories;
 
 public class PostgresDataRepository : IDataRepository
@@ -17,8 +19,7 @@ public class PostgresDataRepository : IDataRepository
 
     public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 
-    public Task AddRangeAsync(List<TradeRecord> model)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task AddRangeAsync(List<TradeRecord> model) => await _context.Set<TradeRecord>().AddRangeAsync(model);
+
+    public async Task<TradeRecord> GetLastRecord() => await _context.Set<TradeRecord>().OrderByDescending(x => x.TRADE_SESSION_DATE).FirstOrDefaultAsync();
 }
