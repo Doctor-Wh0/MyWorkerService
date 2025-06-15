@@ -12,6 +12,13 @@ public class PostgresDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        
+
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TradeRecord>()
+            .HasKey(t => new { t.BOARDID, t.TRADEDATE, t.SECID });
     }
 }
+

@@ -4,22 +4,35 @@ namespace MyWorkerService.Repositories;
 
 public class PostgresDataRepository : IDataRepository
 {
-    private readonly DbContext _context;
+    private readonly PostgresDbContext _context;
 
-    public PostgresDataRepository(DbContext context)
+    public PostgresDataRepository(PostgresDbContext context)
     {
         _context = context;
     }
 
-    public async Task<TradeRecord> GetAsync(int id) => await _context.Set<TradeRecord>().FindAsync(id);
+    public async Task<TradeRecord> GetAsync(int id) => await _context.TradeRecords.FindAsync(id);
 
-    public async Task<IEnumerable<TradeRecord>> GetAllAsync() => await _context.Set<TradeRecord>().ToListAsync();
+    public async Task<IEnumerable<TradeRecord>> GetAllAsync(string ticker) => await _context.TradeRecords
+                                                                                    .Where(x=> x.SHORTNAME == ticker)
+                                                                                    .ToListAsync();
 
-    public async Task AddAsync(TradeRecord model) => await _context.Set<TradeRecord>().AddAsync(model);
+    public async Task AddAsync(TradeRecord model)
+    {
+        await _context.TradeRecords.AddAsync(model);
+        await SaveChangesAsync();
+    }
 
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+    private async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 
-    public async Task AddRangeAsync(List<TradeRecord> model) => await _context.Set<TradeRecord>().AddRangeAsync(model);
+    public async Task AddRangeAsync(List<TradeRecord> model)
+    {
+        await _context.TradeRecords.AddRangeAsync(model);
+        await SaveChangesAsync();
+    }
 
-    public async Task<TradeRecord> GetLastRecord() => await _context.Set<TradeRecord>().OrderByDescending(x => x.TRADE_SESSION_DATE).FirstOrDefaultAsync();
+    public async Task<TradeRecord> GetLastRecordAsync(string ticker) => await _context.TradeRecords
+                                                                    .Where(x => x.SHORTNAME == ticker)
+                                                                    .OrderByDescending(x => x.TRADE_SESSION_DATE)
+                                                                    .FirstOrDefaultAsync();
 }
