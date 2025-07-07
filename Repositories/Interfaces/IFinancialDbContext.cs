@@ -1,4 +1,4 @@
-public interface IFinancialDataContext
+public interface IFinancialDbContext
 {
     Task SaveAsync<T>(T entity) where T : class, IFinancialInstrument;
     Task<IEnumerable<T>> GetAllAsync<T>() where T : class, IFinancialInstrument;

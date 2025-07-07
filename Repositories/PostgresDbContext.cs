@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-public class PostgresDbContext : DbContext, IFinancialDataContext
+public class PostgresDbContext : DbContext, IFinancialDbContext
 {
 
     public DbSet<Stock> Stocks { get; set; }
