@@ -49,7 +49,7 @@ namespace MyWorkerService.Providers
             var days = (int)Math.Ceiling((options.StartDate - options.StartDate).TotalDays);
             List<IFinancialInstrument> data = new List<IFinancialInstrument>(days);
 
-            foreach (var ticker in options.SelectedAssets)
+            foreach (var ticker in options.Assets.Stocks)
             {
                 string url = $"iss/history/engines/stock/markets/shares/securities/{ticker}.json?from={options.StartDate}&till={options.EndDate}&interval={31}";
                 var records = await FetchDataAsync(url);

@@ -1,0 +1,11 @@
+{
+  "Assets": {
+    "Stocks": ["SBER"],
+    "Metals": ["Gold"],
+    "Crypto": ["BTC"]
+  },
+  "LoadRange": {
+    "StartDate": "2025-01-01",
+    "EndDate": "2025-12-31"
+  }
+}

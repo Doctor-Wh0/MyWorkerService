@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using MyWorkerService.Services;
 
 namespace MyWorkerService
@@ -7,12 +8,18 @@ namespace MyWorkerService
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<Worker> _logger;
         private readonly IDataProvider _provider;
+        private readonly LoadOptions _options;
 
-        public Worker(IServiceProvider serviceProvider, ILogger<Worker> logger, IDataProvider moex)
+        public Worker(
+            IServiceProvider serviceProvider,
+            ILogger<Worker> logger,
+            IDataProvider moex,
+            IOptions<LoadOptions> options)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
             _provider = moex;
+            _options = options.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,17 +40,7 @@ namespace MyWorkerService
                         var loader = new DataLoader(context, dataProviders);
 
                         // Параметры загрузки (можно извлечь из JSON)
-                        var loadOptions = new LoadOptions
-                        {
-                            StartDate = new DateTime(2025, 01, 01),
-                            EndDate = DateTime.Now,
-                            // нужно добавить привязку Тикера к провайдеру данных
-                            SelectedAssets = new List<string> { "SBER", /* другие активы */ }
-                        };
-
-                        loader.LoadAllData(loadOptions);
-
-                        
+                        loader.LoadAllData(_options);
 
                         // Логика выполнения задачи
                         _logger.LogInformation("Выполнение задачи в {Time}", DateTime.UtcNow);
