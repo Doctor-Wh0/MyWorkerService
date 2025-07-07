@@ -1,13 +1,8 @@
-c
-
-# Копируем csproj и восстанавливаем зависимости
-COPY *.csproj ./
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+COPY *.csproj .
 RUN dotnet restore
-
-# Копируем все остальные файлы и собираем приложение
 COPY . .
-
-# Собираем приложение
 RUN dotnet publish -c Release -o out
 
 # Создаем новый образ на основе ASP.NET

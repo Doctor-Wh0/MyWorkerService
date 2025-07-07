@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-public class TradeRecord : IFinancialInstrument
+public class Stock : IFinancialInstrument
 {
     public string BOARDID { get; set; }
     public DateTime TRADEDATE { get; set; } // Можно использовать string, если вы не уверены в формате

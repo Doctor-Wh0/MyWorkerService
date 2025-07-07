@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
-public class PostgresDbContext : DbContext
+public class PostgresDbContext : DbContext, IFinancialDataContext
 {
-    public DbSet<TradeRecord> TradeRecords { get; set; } = null!;
+
+    public DbSet<Stock> Stocks { get; set; }
+    public DbSet<Metal> Metals { get; set; }
+    public DbSet<Crypto> Cryptos { get; set; }
+    public DbSet<MarketIndex> Indices { get; set; }
 
     public PostgresDbContext(DbContextOptions<PostgresDbContext> options)
         : base(options)
@@ -14,11 +18,42 @@ public class PostgresDbContext : DbContext
     {
 
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TradeRecord>()
+        modelBuilder.Entity<Stock>()
             .HasKey(t => new { t.BOARDID, t.TRADEDATE, t.SECID });
     }
-}
 
+    public async Task SaveAsync<T>(T entity) where T : class, IFinancialInstrument
+    {
+        await Set<T>().AddAsync(entity);
+        await SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync<T>() where T : class, IFinancialInstrument
+    {
+        return await Set<T>().ToListAsync();
+    }
+
+    public async Task<T> GetByIdAsync<T>(string boardId, DateTime tradeDate, string secId) where T : class, IFinancialInstrument
+    {
+        return await Set<T>().FirstOrDefaultAsync(e => e.BOARDID == boardId && e.TRADEDATE == tradeDate && e.SECID == secId);
+    }
+
+    public async Task UpdateAsync<T>(T entity) where T : class, IFinancialInstrument
+    {
+        Set<T>().Update(entity);
+        await SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync<T>(string boardId, DateTime tradeDate, string secId) where T : class, IFinancialInstrument
+    {
+        var entity = await GetByIdAsync<T>(boardId, tradeDate, secId);
+        if (entity != null)
+        {
+            Set<T>().Remove(entity);
+            await SaveChangesAsync();
+        }
+    }
+}
